@@ -52,6 +52,24 @@ services:
         soft: 98304
         hard: 98304
 
+  balance:
+    image: my-elasticsearch:2.3.3-icu-marvel
+    command: 'elasticsearch -Dnode.name=balance -Ddiscovery.zen.ping.unicast.hosts=node1,node2,node3 -Des.logger.marvel=DEBUG -Des.node.master=false -Des.node.data=false'
+    networks:
+      - elastic
+    ports:
+      - 9214:9200
+      - 9314:9300
+    links:
+      - node1
+      - node2
+      - node3
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 98304
+        hard: 98304
+
   kibana:
     build: ./kibana
     image: my-kibana:4.5.1-marvel
@@ -62,7 +80,7 @@ services:
     links:
       - node1
     environment:
-      ELASTICSEARCH_URL: http://node1:9200
+      ELASTICSEARCH_URL: http://balance:9200
 
 networks:
   elastic:
