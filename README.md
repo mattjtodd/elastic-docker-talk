@@ -344,11 +344,17 @@ balance_1  | [2016-06-30 09:35:43,173][INFO ][node                     ] [balanc
 One you have stood up the cluster and populated it with data, it's easy to bring down some of the nodes and see the effect in Kibana's Mravel plugin:
 
 * If you have the stack running from previous, stop it with `ctrl-c`.
-* Start it up again, this time using `docker-compose up -d`, this use daemon mode.
+* Start it up again, this time using 
+```
+docker-compose up -d
+```
 * Wait for about 30 secs for it to startup properly.
 * Click on the `Indicies` tab at the top of the page and from the list at the bottom choose the item labellled similarly to `.marvel-es-1-2016.06.30`.  This is the Marvel monitoring index.  It has 1 Shard and 1 Replica.
 * At the bottom of the next screen is the nodes and the state of the shard and replica (note the color diff and node containing the _primary_ shard.
-* Back to the console and shutdown the node conatining the primary shard `docker-compose stop <primary-shard-node-name>`
+* Back to the console and shutdown the node conatining the primary shard 
+```
+docker-compose stop <primary-shard-node-name>
+```
 * In Kibana you should see the primary node disapear and the status will go yellow
 * The remaining node containing the replica will be elected as the primary, and in about 30 seconds the a new node will be initialised to hold the required replica and the cluster state should become green again.
 
