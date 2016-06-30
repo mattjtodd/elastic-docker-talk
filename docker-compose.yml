@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  node1:
+    build: ./elasticsearch 
+    image: my-elasticsearch:2.3.3-icu-marvel
+    command: elasticsearch -Dnode.name=node1 -Ddiscovery.zen.ping.unicast.hosts=node2,node3 -Des.logger.marvel=DEBUG
+    networks:
+      - elastic
+    volumes:
+      - node1:/usr/share/elasticsearch/data
+    ports:
+      - 9211:9200
+      - 9311:9300
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 98304
+        hard: 98304
+
+  node2:
+    build: ./elasticsearch
+    image: my-elasticsearch:2.3.3-icu-marvel
+    command: elasticsearch -Dnode.name=node2 -Ddiscovery.zen.ping.unicast.hosts=node1,node3 -Des.logger.marvel=DEBUG
+    networks:
+      - elastic
+    volumes:
+      - node2:/usr/share/elasticsearch/data
+    ports:
+      - 9212:9200
+      - 9312:9300
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 98304
+        hard: 98304
+
+  node3:
+    build: ./elasticsearch
+    image: my-elasticsearch:2.3.3-icu-marvel
+    command: elasticsearch -Dnode.name=node3 -Ddiscovery.zen.ping.unicast.hosts=node1,node2 -Des.logger.marvel=DEBUG
+    networks:
+      - elastic
+    volumes:
+      - node3:/usr/share/elasticsearch/data
+    ports:
+      - 9213:9200
+      - 9313:9300
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 98304
+        hard: 98304
+
+  kibana:
+    build: ./kibana
+    image: my-kibana:4.5.1-marvel
+    networks:
+      - elastic
+    ports:
+      - 5601:5601
+    links:
+      - node1
+    environment:
+      ELASTICSEARCH_URL: http://node1:9200
+
+networks:
+  elastic:
+
+volumes:
+  node1:
+  node2:
+  node3:

@@ -1,0 +1,7 @@
+network.host: 0.0.0.0
+
+#marvel.agent.exporters:
+
+#  id1:
+#    type: http
+#    host:
